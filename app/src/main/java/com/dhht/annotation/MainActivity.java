@@ -6,15 +6,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dhht.annotation.annotation.TestAnnotation;
-import com.dhht.annotation.annotation.ViewById;
+import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
+import com.dhht.annotationlibrary.ViewInjector;
 
 import java.lang.reflect.Field;
 
 /**
  * @author dhht
  */
-@TestAnnotation
 public class MainActivity extends AppCompatActivity {
 
     @ViewById
@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initAnnotation();
+        //initAnnotation();
+        ViewInjector.injectView(this);
         txtView.setOnClickListener(v -> Toast.makeText(MainActivity.this, "醉了", Toast.LENGTH_SHORT).show());
     }
 
@@ -38,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
         for (Field field : fields) {
             //允许修改反射属性
             field.setAccessible(true);
-            ViewById viewById = field.getAnnotation(ViewById.class);
-            if (viewById != null) {
+            ViewByIdLocal viewByIdLocal = field.getAnnotation(ViewByIdLocal.class);
+            if (viewByIdLocal != null) {
                 try {
                     //向对象的这个Field属性设置新值value
-                    if (viewById.value() == -1) {
+                    if (viewByIdLocal.value() == -1) {
                         field.set(MainActivity.this, findViewById(ResourceUtil.getId(MainActivity.this, field.getName())));
                     } else {
-                        field.set(this, findViewById(viewById.value()));
+                        field.set(this, findViewById(viewByIdLocal.value()));
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

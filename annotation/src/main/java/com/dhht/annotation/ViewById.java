@@ -1,4 +1,4 @@
-package com.dhht.annotation.annotation;
+package com.dhht.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
