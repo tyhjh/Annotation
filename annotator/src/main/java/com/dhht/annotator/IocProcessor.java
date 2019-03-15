@@ -96,14 +96,19 @@ public class IocProcessor extends AbstractProcessor {
                         "Unable to write injector for type %s: %s",
                         proxyInfo.getTypeElement(), e.getMessage());
             }
-
         }
-
         return true;
     }
 
-
+    /**
+     * 检测注解使用是否正确
+     *
+     * @param annotatedElement
+     * @param clazz
+     * @return
+     */
     private boolean checkAnnotationValid(Element annotatedElement, Class clazz) {
+        //检测是否是
         if (annotatedElement.getKind() != ElementKind.FIELD) {
             error(annotatedElement, "%s must be declared on field.", clazz.getSimpleName());
             return false;

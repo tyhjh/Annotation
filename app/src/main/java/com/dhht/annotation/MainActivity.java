@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dhht.annotation.annotation.TestAnnotation;
 import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
 import com.dhht.annotationlibrary.ViewInjector;
@@ -27,7 +26,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //initAnnotation();
         ViewInjector.injectView(this);
+        User user = new User();
         txtView.setOnClickListener(v -> Toast.makeText(MainActivity.this, "醉了", Toast.LENGTH_SHORT).show());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
     }
 
     /**
