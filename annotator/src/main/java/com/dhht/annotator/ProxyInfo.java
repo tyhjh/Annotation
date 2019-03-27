@@ -41,16 +41,13 @@ public class ProxyInfo {
         builder.append("// Generated code. Do not modify!\n");
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import com.dhht.annotation.*;\n");
-        builder.append("import com.dhht.annotation.R;\n");
+        builder.append("import ").append(getLibrayPath(packageName)).append(".R;\n");
         builder.append("import com.dhht.annotationlibrary.*;\n");
         builder.append('\n');
-
         builder.append("public class ").append(proxyClassName).append(" implements " + ProxyInfo.PROXY + "<" + typeElement.getQualifiedName() + ">");
         builder.append(" {\n");
-
         generateMethods(builder);
         builder.append('\n');
-
         builder.append("}\n");
         return builder.toString();
     }
@@ -108,5 +105,24 @@ public class ProxyInfo {
         return typeElement;
     }
 
+
+    /**
+     * 获取包名
+     *
+     * @param packageName
+     * @return
+     */
+    private String getLibrayPath(String packageName) {
+        return packageName.substring(0, ordinalIndexOf(packageName, ".", 3));
+    }
+
+
+    private int ordinalIndexOf(String str, String substr, int n) {
+        int pos = str.indexOf(substr);
+        while (--n > 0 && pos != -1) {
+            pos = str.indexOf(substr, pos + 1);
+        }
+        return pos;
+    }
 
 }
