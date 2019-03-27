@@ -31,11 +31,29 @@ import javax.tools.JavaFileObject;
  */
 @AutoService(Processor.class)
 public class IocProcessor extends AbstractProcessor {
+
+    /**
+     * 生成代码用的
+     */
     private Filer mFileUtils;
+
+    /**
+     * 跟元素相关的辅助类，帮助我们去获取一些元素相关的信息
+     * - VariableElement  一般代表成员变量
+     * - ExecutableElement  一般代表类中的方法
+     * - TypeElement  一般代表代表类
+     * - PackageElement  一般代表Package
+     */
     private Elements mElementUtils;
+
+    /**
+     * 跟日志相关的辅助类
+     */
     private Messager mMessager;
 
+
     private Map<String, ProxyInfo> mProxyMap = new HashMap<String, ProxyInfo>();
+
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -45,9 +63,15 @@ public class IocProcessor extends AbstractProcessor {
         mMessager = processingEnv.getMessager();
     }
 
+    /**
+     * 添加需要支持的注解
+     *
+     * @return
+     */
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> annotationTypes = new LinkedHashSet<String>();
+        //添加需要支持的注解
         annotationTypes.add(ViewById.class.getCanonicalName());
         return annotationTypes;
     }
@@ -57,34 +81,42 @@ public class IocProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
+
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mProxyMap.clear();
+        //获取被注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(ViewById.class);
         for (Element element : elements) {
             //检查element类型
             if (!checkAnnotationValid(element, ViewById.class)) {
                 return false;
             }
-            //field type
+            //获取到这个成员变量
             VariableElement variableElement = (VariableElement) element;
-            //class type
+            //获取到这个变量的外部类，所在的类
             TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
+            //获取外部类的类名
             String qualifiedName = typeElement.getQualifiedName().toString();
+            //先保存一波
             ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
             if (proxyInfo == null) {
                 proxyInfo = new ProxyInfo(mElementUtils, typeElement);
                 mProxyMap.put(qualifiedName, proxyInfo);
             }
+            //把这个注解保存到proxyInfo里面，用于实现功能
             ViewById annotation = variableElement.getAnnotation(ViewById.class);
             int id = annotation.value();
             proxyInfo.injectVariables.put(id, variableElement);
         }
 
+
+        //生成类
         for (String key : mProxyMap.keySet()) {
             ProxyInfo proxyInfo = mProxyMap.get(key);
             try {
-                JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
+                //创建一个新的源文件，并返回一个对象以允许写入它
+                JavaFileObject jfo = mFileUtils.createSourceFile(
                         proxyInfo.getProxyClassFullName(),
                         proxyInfo.getTypeElement());
                 Writer writer = jfo.openWriter();
@@ -108,11 +140,12 @@ public class IocProcessor extends AbstractProcessor {
      * @return
      */
     private boolean checkAnnotationValid(Element annotatedElement, Class clazz) {
-        //检测是否是
+        //检测是否是变量
         if (annotatedElement.getKind() != ElementKind.FIELD) {
             error(annotatedElement, "%s must be declared on field.", clazz.getSimpleName());
             return false;
         }
+        //检测这个变量是不是公有的
         if (ClassValidator.isPrivate(annotatedElement)) {
             error(annotatedElement, "%s() must can not be private.", annotatedElement.getSimpleName());
             return false;

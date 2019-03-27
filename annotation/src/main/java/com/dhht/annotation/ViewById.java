@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @date 2019/3/12  下午5:34
  */
 @Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 public @interface ViewById {
     int value() default -1;
 }

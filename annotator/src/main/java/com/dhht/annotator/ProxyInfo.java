@@ -8,6 +8,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
+/**
+ * @author dhht
+ */
 public class ProxyInfo {
     private String packageName;
     private String proxyClassName;
@@ -28,11 +31,17 @@ public class ProxyInfo {
     }
 
 
+    /**
+     * 生成代码
+     *
+     * @return
+     */
     public String generateJavaCode() {
         StringBuilder builder = new StringBuilder();
         builder.append("// Generated code. Do not modify!\n");
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import com.dhht.annotation.*;\n");
+        builder.append("import com.dhht.annotation.R;\n");
         builder.append("import com.dhht.annotationlibrary.*;\n");
         builder.append('\n');
 
@@ -47,8 +56,12 @@ public class ProxyInfo {
     }
 
 
+    /**
+     * 生成方法
+     *
+     * @param builder
+     */
     private void generateMethods(StringBuilder builder) {
-
         builder.append("@Override\n ");
         builder.append("public void inject(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
         for (int id : injectVariables.keySet()) {
@@ -77,10 +90,20 @@ public class ProxyInfo {
 
     }
 
+    /**
+     * 获取全名
+     *
+     * @return
+     */
     public String getProxyClassFullName() {
         return packageName + "." + proxyClassName;
     }
 
+    /**
+     * 获取TypeElement
+     *
+     * @return
+     */
     public TypeElement getTypeElement() {
         return typeElement;
     }

@@ -19,9 +19,15 @@ public class ViewInjector {
         proxyActivity.inject(object, view);
     }
 
-    private static ViewInject findProxyActivity(Object activity) {
+    /**
+     * 根据使用注解的类和约定的命名规则，反射获取注解生成的类
+     *
+     * @param object
+     * @return
+     */
+    private static ViewInject findProxyActivity(Object object) {
         try {
-            Class clazz = activity.getClass();
+            Class clazz = object.getClass();
             Class injectorClazz = Class.forName(clazz.getName() + SUFFIX);
             return (ViewInject) injectorClazz.newInstance();
         } catch (ClassNotFoundException e) {
@@ -31,6 +37,6 @@ public class ViewInjector {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        throw new RuntimeException(String.format("can not find %s , something when compiler.", activity.getClass().getSimpleName() + SUFFIX));
+        throw new RuntimeException(String.format("can not find %s , something when compiler.", object.getClass().getSimpleName() + SUFFIX));
     }
 }
