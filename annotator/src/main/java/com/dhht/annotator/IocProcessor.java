@@ -1,12 +1,15 @@
 package com.dhht.annotator;
 
+import com.dhht.annotation.Click;
 import com.dhht.annotation.ViewById;
 import com.google.auto.service.AutoService;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,31 +88,14 @@ public class IocProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mProxyMap.clear();
-        //获取被注解的元素
-        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(ViewById.class);
-        for (Element element : elements) {
-            //检查element类型
-            if (!checkAnnotationValid(element, ViewById.class)) {
-                return false;
-            }
-            //获取到这个成员变量
-            VariableElement variableElement = (VariableElement) element;
-            //获取到这个变量的外部类，所在的类
-            TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
-            //获取外部类的类名
-            String qualifiedName = typeElement.getQualifiedName().toString();
-            //先保存一波
-            ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
-            if (proxyInfo == null) {
-                proxyInfo = new ProxyInfo(mElementUtils, typeElement);
-                mProxyMap.put(qualifiedName, proxyInfo);
-            }
-            //把这个注解保存到proxyInfo里面，用于实现功能
-            ViewById annotation = variableElement.getAnnotation(ViewById.class);
-            int id = annotation.value();
-            proxyInfo.injectVariables.put(id, variableElement);
-        }
 
+        mClasses.add(ViewById.class);
+        mClasses.add(Click.class);
+
+        //保存注解
+        if (!saveAnnotation(roundEnvironment)) {
+            return false;
+        }
 
         //生成类
         for (String key : mProxyMap.keySet()) {
@@ -132,19 +118,48 @@ public class IocProcessor extends AbstractProcessor {
         return true;
     }
 
+
+    List<Class> mClasses = new ArrayList<>();
+
+    public boolean saveAnnotation(RoundEnvironment roundEnvironment) {
+        for (Class clazz : mClasses) {
+            //获取被注解的元素
+            Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(clazz);
+            for (Element element : elements) {
+                //检查element类型
+                if (!checkAnnotationValid(element)) {
+                    return false;
+                }
+                //获取到这个变量的外部类
+                TypeElement typeElement = (TypeElement) element.getEnclosingElement();
+                //获取外部类的类名
+                String qualifiedName = typeElement.getQualifiedName().toString();
+                //以外部类为单位保存
+                ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
+                if (proxyInfo == null) {
+                    proxyInfo = new ProxyInfo(mElementUtils, typeElement);
+                    mProxyMap.put(qualifiedName, proxyInfo);
+                }
+                //把这个注解保存到proxyInfo里面，用于实现功能
+                proxyInfo.mElementList.add(element);
+            }
+        }
+        return true;
+    }
+
+
     /**
      * 检测注解使用是否正确
      *
      * @param annotatedElement
-     * @param clazz
      * @return
      */
-    private boolean checkAnnotationValid(Element annotatedElement, Class clazz) {
+    private boolean checkAnnotationValid(Element annotatedElement) {
         //检测是否是变量
-        if (annotatedElement.getKind() != ElementKind.FIELD) {
+       /* if (annotatedElement.getKind() != ElementKind.FIELD) {
             error(annotatedElement, "%s must be declared on field.", clazz.getSimpleName());
             return false;
-        }
+        }*/
         //检测这个变量是不是公有的
         if (ClassValidator.isPrivate(annotatedElement)) {
             error(annotatedElement, "%s() must can not be private.", annotatedElement.getSimpleName());

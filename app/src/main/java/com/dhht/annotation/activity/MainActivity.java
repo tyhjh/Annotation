@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dhht.annotation.Click;
 import com.dhht.annotation.R;
 import com.dhht.annotation.ViewById;
 import com.dhht.annotation.annotation.ViewByIdLocal;
@@ -19,7 +20,8 @@ import java.lang.reflect.Field;
 public class MainActivity extends AppCompatActivity {
 
     @ViewById
-    TextView txtView;
+    TextView txtView, txtView2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //initAnnotation();
         ViewInjector.injectView(this);
-        txtView.setOnClickListener(v -> Toast.makeText(MainActivity.this, "醉了", Toast.LENGTH_SHORT).show());
+        txtView2.setOnClickListener(v -> Toast.makeText(MainActivity.this, "醉了2", Toast.LENGTH_SHORT).show());
+
+    }
+
+
+    @Click(R.id.txtView)
+    void txtView() {
+        Toast.makeText(MainActivity.this, "呵呵", Toast.LENGTH_SHORT).show();
+    }
+
+    @Click
+    void etTest() {
+        Toast.makeText(MainActivity.this, "哈哈哈", Toast.LENGTH_SHORT).show();
     }
 
     /**
