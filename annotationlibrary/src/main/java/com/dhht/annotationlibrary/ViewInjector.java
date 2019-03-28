@@ -11,11 +11,17 @@ public class ViewInjector {
 
     public static void injectView(Activity activity) {
         ViewInject proxyActivity = findProxyActivity(activity);
+        if (proxyActivity == null) {
+            return;
+        }
         proxyActivity.inject(activity, activity);
     }
 
     public static void injectView(Object object, View view) {
         ViewInject proxyActivity = findProxyActivity(object);
+        if (proxyActivity == null) {
+            return;
+        }
         proxyActivity.inject(object, view);
     }
 
@@ -30,13 +36,9 @@ public class ViewInjector {
             Class clazz = object.getClass();
             Class injectorClazz = Class.forName(clazz.getName() + SUFFIX);
             return (ViewInject) injectorClazz.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return null;
         }
-        throw new RuntimeException(String.format("can not find %s , something when compiler.", object.getClass().getSimpleName() + SUFFIX));
+
     }
 }

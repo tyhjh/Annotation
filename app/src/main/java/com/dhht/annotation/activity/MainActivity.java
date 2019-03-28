@@ -19,7 +19,6 @@ import java.lang.reflect.Field;
  */
 public class MainActivity extends AppCompatActivity {
 
-    @ViewById
     TextView txtView, txtView2;
 
 
@@ -29,17 +28,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //initAnnotation();
         ViewInjector.injectView(this);
-        txtView2.setOnClickListener(v -> Toast.makeText(MainActivity.this, "醉了2", Toast.LENGTH_SHORT).show());
 
     }
 
 
-    @Click(R.id.txtView)
     void txtView() {
         Toast.makeText(MainActivity.this, "呵呵", Toast.LENGTH_SHORT).show();
     }
 
-    @Click
     void etTest() {
         Toast.makeText(MainActivity.this, "哈哈哈", Toast.LENGTH_SHORT).show();
     }
