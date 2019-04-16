@@ -1,12 +1,15 @@
 package com.dhht.annotation.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dhht.annotation.Background;
 import com.dhht.annotation.Click;
 import com.dhht.annotation.R;
+import com.dhht.annotation.UiThread;
 import com.dhht.annotation.ViewById;
 import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
@@ -17,8 +20,9 @@ import java.lang.reflect.Field;
 /**
  * @author dhht
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
+    @ViewById(value = R.id.txtView)
     TextView txtView, txtView2;
 
 
@@ -28,16 +32,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //initAnnotation();
         ViewInjector.injectView(this);
-
     }
 
 
+    @Click(R.id.txtView)
     void txtView() {
-        Toast.makeText(MainActivity.this, "呵呵", Toast.LENGTH_SHORT).show();
+        Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        backgroud();
+    }
+
+    @Click
+    void txtView2() {
+        Log.e("txtView2", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        toast("UiThread");
     }
 
     void etTest() {
         Toast.makeText(MainActivity.this, "哈哈哈", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    @UiThread(delay = 1000 * 5)
+    void toast(String msg) {
+        Log.e("toast", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Background(delay = 1000)
+    void backgroud() {
+        Log.e("backgroud", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        //toast("主线程");
     }
 
     /**

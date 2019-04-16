@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'android-aspectjx'
 group='com.github.tyhjh'
 android {
     compileSdkVersion 28
@@ -23,6 +24,12 @@ android {
 
 }
 
+
+aspectjx {
+//排除所有package路径中包含`android.support`的class文件及库（jar文件）
+    exclude 'android.support'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -31,4 +38,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api project(':annotation')
+    api 'org.aspectj:aspectjrt:1.8.9'
+
+    //rxJava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
 }

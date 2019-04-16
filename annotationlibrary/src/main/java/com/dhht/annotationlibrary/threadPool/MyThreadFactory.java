@@ -30,7 +30,6 @@ public class MyThreadFactory implements ThreadFactory {
         return t;
     }
 
-
     public String getStas() {
         StringBuffer buffer = new StringBuffer();
         Iterator<String> it = stats.iterator();
