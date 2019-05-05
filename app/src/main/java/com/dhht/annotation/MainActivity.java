@@ -1,4 +1,4 @@
-package com.dhht.annotation.activity;
+package com.dhht.annotation;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,11 +6,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dhht.annotation.Background;
-import com.dhht.annotation.Click;
-import com.dhht.annotation.R;
-import com.dhht.annotation.UiThread;
-import com.dhht.annotation.ViewById;
 import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
 import com.dhht.annotationlibrary.ViewInjector;
@@ -49,7 +44,6 @@ public class MainActivity extends Activity {
 
     void etTest() {
         Toast.makeText(MainActivity.this, "哈哈哈", Toast.LENGTH_SHORT).show();
-
     }
 
 

@@ -214,7 +214,11 @@ public class ProxyInfo {
      * @return
      */
     private String getLibrayPath(String packageName) {
-        return packageName.substring(0, ordinalIndexOf(packageName, ".", 3));
+        try {
+            return packageName.substring(0, ordinalIndexOf(packageName, ".", 3));
+        } catch (Exception e) {
+            return packageName;
+        }
     }
 
 
