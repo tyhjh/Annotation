@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;
+import com.dhht.annotationlibrary.ViewInjector;
 import com.example.recyclelibrary.CommonAdapter;
 import com.example.recyclelibrary.CommonViewHolder;
 
@@ -16,6 +16,7 @@ import java.util.List;
 public class Main2Activity extends Activity {
 
 
+    @ViewById
     RecyclerView ryclView;
 
     List<String> mList = new ArrayList<>();
@@ -23,12 +24,18 @@ public class Main2Activity extends Activity {
 
     CommonAdapter<String> mAdapter;
 
+
+    @RecyclerMore
+    void ryclView() {
+        mList.addAll(mList2);
+        mAdapter.replaceData(mList);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.actvity_two);
-
+        ViewInjector.injectView(this);
         mAdapter = new CommonAdapter<String>(this, mList, R.layout.list_item_txt) {
             @Override
             public void onBindView(CommonViewHolder viewHolder, String s) {
@@ -37,18 +44,8 @@ public class Main2Activity extends Activity {
         };
 
         mockData();
-        ryclView = findViewById(R.id.ryclView);
         ryclView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
         ryclView.setAdapter(mAdapter);
-        ryclView.addOnScrollListener(new RecyclerViewScrollListener() {
-
-            @Override
-            public void onScrollToBottom() {
-                mList.addAll(mList2);
-                mAdapter.replaceData(mList);
-            }
-        });
     }
 
     private void mockData() {

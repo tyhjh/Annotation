@@ -1,6 +1,7 @@
 package com.dhht.annotator;
 
 import com.dhht.annotation.Click;
+import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.ViewById;
 import com.google.auto.service.AutoService;
 
@@ -76,6 +77,8 @@ public class IocProcessor extends AbstractProcessor {
         Set<String> annotationTypes = new LinkedHashSet<String>();
         //添加需要支持的注解
         annotationTypes.add(ViewById.class.getCanonicalName());
+        annotationTypes.add(Click.class.getCanonicalName());
+        annotationTypes.add(RecyclerMore.class.getCanonicalName());
         return annotationTypes;
     }
 
@@ -91,6 +94,7 @@ public class IocProcessor extends AbstractProcessor {
 
         mClasses.add(ViewById.class);
         mClasses.add(Click.class);
+        mClasses.add(RecyclerMore.class);
 
         //保存注解
         if (!saveAnnotation(roundEnvironment)) {

@@ -1,6 +1,7 @@
 package com.dhht.annotator;
 
 import com.dhht.annotation.Click;
+import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.ViewById;
 
 import java.util.ArrayList;
@@ -61,6 +62,10 @@ public class ProxyInfo {
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import android.view.View;\n");
         builder.append("import com.dhht.annotation.*;\n");
+
+        builder.append("import android.support.v7.widget.RecyclerView;\n");
+        builder.append("import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;\n");
+
         builder.append("import ").append(getLibrayPath(packageName)).append(".R;\n");
         builder.append("import com.dhht.annotationlibrary.*;\n");
         builder.append('\n');
@@ -87,6 +92,7 @@ public class ProxyInfo {
         builder.append("public void inject(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
         builder.append("initViewById(host,source);\n ");
         builder.append("initClick(host,source);\n");
+        builder.append("initRcylMore(host,source);\n");
         builder.append("  }\n");
 
 
@@ -118,6 +124,23 @@ public class ProxyInfo {
             }
         }
         builder.append("}");
+
+
+
+        //生成 initRcylMore 方法
+        builder.append("public void initRcylMore(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        iterator = mElementList.iterator();
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
+            RecyclerMore annotation = element.getAnnotation(RecyclerMore.class);
+            if (annotation != null) {
+                ExecutableElement executableElement = (ExecutableElement) element;
+                generateRecycleMore(executableElement, builder);
+                iterator.remove();
+            }
+        }
+        builder.append("}");
+
 
 
     }
@@ -183,6 +206,54 @@ public class ProxyInfo {
         }
 
         builder.append(".setOnClickListener(v->host." + mothed + "());");
+
+        builder.append("  }\n");
+    }
+
+
+    /**
+     * 生成Click方法
+     *
+     * @param builder
+     */
+    private void generateRecycleMore(ExecutableElement executableElement, StringBuilder builder) {
+
+        //获取注解值
+        int id = executableElement.getAnnotation(RecyclerMore.class).value();
+        //获取变量名字
+        String mothed = executableElement.getSimpleName().toString();
+
+        builder.append(" if(source instanceof android.app.Activity){\n");
+
+        if (id == -1) {
+            builder.append("((RecyclerView)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")))");
+        } else {
+            builder.append("((RecyclerView)(((android.app.Activity)source).findViewById( " + id + ")))");
+        }
+
+        builder.append(".addOnScrollListener(new RecyclerViewScrollListener() {\n" +
+                "\n" +
+                "            @Override\n" +
+                "            public void onScrollToBottom() {\n" +
+                "host."+mothed+"();"+
+                "            }\n" +
+                "        });");
+
+        builder.append("\n}else{\n");
+
+        if (id == -1) {
+            builder.append("((RecyclerView)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")))");
+        } else {
+            builder.append("((RecyclerView)(((android.view.View)source).findViewById( " + id + ")))");
+        }
+
+        builder.append(".addOnScrollListener(new RecyclerViewScrollListener() {\n" +
+                "\n" +
+                "            @Override\n" +
+                "            public void onScrollToBottom() {\n" +
+                "host."+mothed+"();"+
+                "            }\n" +
+                "        });");
 
         builder.append("  }\n");
     }
