@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         //initAnnotation();
         ViewInjector.injectView(this);
+        toast("xxxx");
     }
 
 
