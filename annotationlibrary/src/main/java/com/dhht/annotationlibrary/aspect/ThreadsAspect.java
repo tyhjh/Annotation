@@ -32,7 +32,7 @@ public class ThreadsAspect {
 
         final Background background = getMethodAnnotation(joinPoint, Background.class);
         Observable.timer(background.delay(), TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
@@ -52,6 +52,7 @@ public class ThreadsAspect {
         UiThread uiThread = getMethodAnnotation(joinPoint, UiThread.class);
 
         Observable.timer(uiThread.delay(), TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Long>() {
                     @Override
