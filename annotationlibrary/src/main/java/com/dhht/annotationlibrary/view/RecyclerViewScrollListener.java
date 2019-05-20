@@ -17,10 +17,15 @@ public abstract class RecyclerViewScrollListener extends RecyclerView.OnScrollLi
     // 最后一个完全可见项的位置
     private int lastCompletelyVisibleItemPosition;
 
+    protected int itermsCount;
+
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+        itermsCount = layoutManager.getItemCount();
+
         // 找到最后一个完全可见项的位置
         if (layoutManager instanceof StaggeredGridLayoutManager) {
             StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) layoutManager;

@@ -126,7 +126,6 @@ public class ProxyInfo {
         builder.append("}");
 
 
-
         //生成 initRcylMore 方法
         builder.append("public void initRcylMore(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
         iterator = mElementList.iterator();
@@ -140,7 +139,6 @@ public class ProxyInfo {
             }
         }
         builder.append("}");
-
 
 
     }
@@ -212,7 +210,7 @@ public class ProxyInfo {
 
 
     /**
-     * 生成Click方法
+     * 生成RecycleMore方法
      *
      * @param builder
      */
@@ -220,6 +218,8 @@ public class ProxyInfo {
 
         //获取注解值
         int id = executableElement.getAnnotation(RecyclerMore.class).value();
+        int pageSize = executableElement.getAnnotation(RecyclerMore.class).pageSize();
+
         //获取变量名字
         String mothed = executableElement.getSimpleName().toString();
 
@@ -235,7 +235,12 @@ public class ProxyInfo {
                 "\n" +
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
-                "host."+mothed+"();"+
+
+                "if("+pageSize+"==-1){\n" +
+                "host." + mothed + "();\n" +
+                "                    }else if(itermsCount>="+pageSize+"){\n" +
+                "host." + mothed + "();\n" +
+                "                    }" +
                 "            }\n" +
                 "        });");
 
@@ -251,7 +256,7 @@ public class ProxyInfo {
                 "\n" +
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
-                "host."+mothed+"();"+
+                "host." + mothed + "();" +
                 "            }\n" +
                 "        });");
 

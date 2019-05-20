@@ -25,10 +25,10 @@ public class Main2Activity extends Activity {
     CommonAdapter<String> mAdapter;
 
 
-    @RecyclerMore
+    @RecyclerMore(pageSize = 5)
     void ryclView() {
-        mList.addAll(mList2);
-        mAdapter.replaceData(mList);
+        mAdapter.getDatas().addAll(mList2);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -49,20 +49,12 @@ public class Main2Activity extends Activity {
     }
 
     private void mockData() {
+
         mList.add("胸大师傅");
         mList.add("事发地时");
         mList.add("防守打法");
         mList.add("发斯蒂芬");
-        mList.add("发的发的");
-        mList.add("让他也让他");
-        mList.add("可男可女可");
-        mList.add("胸大师傅");
-        mList.add("事发地时");
-        mList.add("防守打法");
-        mList.add("发斯蒂芬");
-        mList.add("发的发的");
-        mList.add("让他也让他");
-        mList.add("可男可女可");
+
 
         mList2.add("胸大师傅");
         mList2.add("事发地时");

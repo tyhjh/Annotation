@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface RecyclerMore {
     int value() default -1;
+    int pageSize() default -1;
 }
