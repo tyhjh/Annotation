@@ -241,6 +241,7 @@ public class ProxyInfo {
                 "                    }else if(itermsCount>="+pageSize+"){\n" +
                 "host." + mothed + "();\n" +
                 "                    }" +
+
                 "            }\n" +
                 "        });");
 
@@ -256,7 +257,11 @@ public class ProxyInfo {
                 "\n" +
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
-                "host." + mothed + "();" +
+                "if("+pageSize+"==-1){\n" +
+                "host." + mothed + "();\n" +
+                "                    }else if(itermsCount>="+pageSize+"){\n" +
+                "host." + mothed + "();\n" +
+                "                    }" +
                 "            }\n" +
                 "        });");
 
