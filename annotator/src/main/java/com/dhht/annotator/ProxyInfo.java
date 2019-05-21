@@ -236,9 +236,9 @@ public class ProxyInfo {
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
 
-                "if("+pageSize+"==-1){\n" +
+                "if(" + pageSize + "==-1){\n" +
                 "host." + mothed + "();\n" +
-                "                    }else if(itermsCount>="+pageSize+"){\n" +
+                "                    }else if(itermsCount>=" + pageSize + "){\n" +
                 "host." + mothed + "();\n" +
                 "                    }" +
 
@@ -257,9 +257,9 @@ public class ProxyInfo {
                 "\n" +
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
-                "if("+pageSize+"==-1){\n" +
+                "if(" + pageSize + "==-1){\n" +
                 "host." + mothed + "();\n" +
-                "                    }else if(itermsCount>="+pageSize+"){\n" +
+                "                    }else if(itermsCount>=" + pageSize + "){\n" +
                 "host." + mothed + "();\n" +
                 "                    }" +
                 "            }\n" +
