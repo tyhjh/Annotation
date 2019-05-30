@@ -13,5 +13,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
 public @interface Click {
+
+    /**
+     * 控件ID，默认为变量名
+     *
+     * @return
+     */
     int value() default -1;
+
+    /**
+     * 点击间隔
+     *
+     * @return
+     */
+    int interval() default -1;
 }

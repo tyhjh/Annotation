@@ -65,6 +65,7 @@ public class ProxyInfo {
 
         builder.append("import android.support.v7.widget.RecyclerView;\n");
         builder.append("import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;\n");
+        builder.append("import com.dhht.annotationlibrary.view.AvoidShake;\n");
 
         builder.append("import ").append(getLibrayPath(packageName)).append(".R;\n");
         builder.append("import com.dhht.annotationlibrary.*;\n");
@@ -113,6 +114,7 @@ public class ProxyInfo {
 
         //生成 initClick 方法
         builder.append("public void initClick(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        builder.append("View view;\n");
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
@@ -182,28 +184,36 @@ public class ProxyInfo {
 
         //获取注解值
         int id = executableElement.getAnnotation(Click.class).value();
+
+        int intervalTime = executableElement.getAnnotation(Click.class).interval();
         //获取变量名字
         String mothed = executableElement.getSimpleName().toString();
 
         builder.append(" if(source instanceof android.app.Activity){\n");
 
         if (id == -1) {
-            builder.append("((View)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")))");
+            builder.append("view=((View)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
-            builder.append("((View)(((android.app.Activity)source).findViewById( " + id + ")))");
+            builder.append("view=((View)(((android.app.Activity)source).findViewById( " + id + ")));\n");
         }
 
-        builder.append(".setOnClickListener(v->host." + mothed + "());");
+        builder.append("view.setOnClickListener(v->{" +
+                "AvoidShake.avoidViewShake(v," + intervalTime + ");" +
+                "host." + mothed + "();" +
+                "});");
 
         builder.append("\n}else{\n");
 
         if (id == -1) {
-            builder.append("((View)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")))");
+            builder.append("view=((View)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
-            builder.append("((View)(((android.view.View)source).findViewById( " + id + ")))");
+            builder.append("view=((View)(((android.view.View)source).findViewById( " + id + ")));\n");
         }
 
-        builder.append(".setOnClickListener(v->host." + mothed + "());");
+        builder.append("view.setOnClickListener(v->{" +
+                "AvoidShake.avoidViewShake(v," + intervalTime + ");" +
+                "host." + mothed + "();" +
+                "});");
 
         builder.append("  }\n");
     }

@@ -27,7 +27,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ThreadsAspect {
     @Around("execution(@com.dhht.annotation.Background void *(..))")
     public void doBackground(final ProceedingJoinPoint joinPoint) {
-
         final Background background = getMethodAnnotation(joinPoint, Background.class);
         Observable.timer(background.delay(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())

@@ -3,12 +3,14 @@ package com.dhht.annotation;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
 import com.dhht.annotationlibrary.ViewInjector;
+import com.dhht.annotationlibrary.view.AvoidShake;
 
 import java.lang.reflect.Field;
 
@@ -25,22 +27,26 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AvoidShake.setClickIntervalTime(9000);
         //initAnnotation();
         ViewInjector.injectView(this);
         toast("xxxx");
     }
 
+    int x = 0;
 
-    @Click(R.id.txtView)
+    @Click(value = R.id.txtView)
     void txtView() {
-        Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
-        backgroud();
+        x++;
+        //Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        Toast.makeText(this, "txtView1：" + x, Toast.LENGTH_SHORT).show();
     }
 
-    @Click
+    @Click(interval = 100)
     void txtView2() {
         Log.e("txtView2", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
-        toast("UiThread");
+        Toast.makeText(this, "txtView2：" + x, Toast.LENGTH_SHORT).show();
     }
 
     void etTest() {
@@ -54,10 +60,11 @@ public class MainActivity extends Activity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    @Background(delay = 1000)
-    void backgroud() {
+    @Background(delay = 3000)
+    void backgroud(View view) {
         Log.e("backgroud", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         //toast("主线程");
+        view.setClickable(true);
     }
 
     /**
