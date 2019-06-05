@@ -11,6 +11,8 @@ import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
 import com.dhht.annotationlibrary.ViewInjector;
 import com.dhht.annotationlibrary.view.AvoidShake;
+import com.dhht.annotationlibrary.view.AvoidShakeClickHelper;
+import com.dhht.annotationlibrary.view.AvoidShakeListener;
 
 import java.lang.reflect.Field;
 
@@ -32,23 +34,20 @@ public class MainActivity extends Activity {
         AvoidShake.setClickIntervalTime(2000);
         //initAnnotation();
 
-
         toast("xxxx");
+
     }
 
     int x = 0;
 
     @Click(value = R.id.txtView)
     void txtView() {
-        x++;
         //Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, "txtView1：" + x, Toast.LENGTH_SHORT).show();
-
     }
 
 
-
-    @Click(interval = 100)
+    @Click(interval = 1000)
     void txtView2() {
         Log.e("txtView2", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, "txtView2：" + x, Toast.LENGTH_SHORT).show();

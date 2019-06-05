@@ -67,6 +67,10 @@ public class ProxyInfo {
         builder.append("import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;\n");
         builder.append("import com.dhht.annotationlibrary.view.AvoidShake;\n");
 
+        builder.append("import com.dhht.annotationlibrary.view.AvoidShakeClickHelper;\n");
+        builder.append("import com.dhht.annotationlibrary.view.AvoidShakeListener;\n");
+
+
         builder.append("import ").append(getLibrayPath(packageName)).append(".R;\n");
         builder.append("import com.dhht.annotationlibrary.*;\n");
         builder.append('\n');
@@ -197,10 +201,14 @@ public class ProxyInfo {
             builder.append("view=((View)(((android.app.Activity)source).findViewById( " + id + ")));\n");
         }
 
-        builder.append("view.setOnClickListener(v->{" +
-                "AvoidShake.avoidViewShake(v," + intervalTime + ");" +
+        builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ", new AvoidShakeListener() {\n" +
+                "            @Override\n" +
+                "            public void onClick(View v) {\n" +
                 "host." + mothed + "();" +
-                "});");
+                "                \n" +
+                "            }\n" +
+                "        }));");
+
 
         builder.append("\n}else{\n");
 
@@ -210,10 +218,13 @@ public class ProxyInfo {
             builder.append("view=((View)(((android.view.View)source).findViewById( " + id + ")));\n");
         }
 
-        builder.append("view.setOnClickListener(v->{" +
-                "AvoidShake.avoidViewShake(v," + intervalTime + ");" +
+        builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ", new AvoidShakeListener() {\n" +
+                "            @Override\n" +
+                "            public void onClick(View v) {\n" +
                 "host." + mothed + "();" +
-                "});");
+                "                \n" +
+                "            }\n" +
+                "        }));");
 
         builder.append("  }\n");
     }

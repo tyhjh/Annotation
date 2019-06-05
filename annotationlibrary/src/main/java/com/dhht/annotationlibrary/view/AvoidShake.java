@@ -14,15 +14,16 @@ public class AvoidShake {
     /**
      * 默认点击间隔时间
      */
-    private static int sClickIntervalTime = 200;
+    private static int sClickIntervalTime = 300;
 
     /**
-     * 设置防抖动
+     * 方法已不推荐使用，改方法使用线程切换的方式会增加CPU开销
      *
      * @param view
      * @param clickIntervalTime 时间单位为毫秒
      */
     @Background
+    @Deprecated
     public static void avoidViewShake(View view, int clickIntervalTime) {
         try {
             if (view != null) {
@@ -41,7 +42,6 @@ public class AvoidShake {
 
     @UiThread
     private static void recoverView(View view) {
-        System.out.println("设置防抖动UiThread：" + Thread.currentThread().getName());
         if (view != null) {
             view.setClickable(true);
         }
