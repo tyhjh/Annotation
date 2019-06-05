@@ -21,6 +21,16 @@ public class AvoidShakeClickHelper implements View.OnClickListener {
         }
     }
 
+
+
+    public AvoidShakeClickHelper(AvoidShakeListener avoidShakeListener) {
+        mAvoidShakeListener = avoidShakeListener;
+        if (mClickIntervalTime < 0) {
+            mClickIntervalTime = AvoidShake.getClickIntervalTime();
+        }
+    }
+
+
     @Override
     public void onClick(View v) {
         if (System.currentTimeMillis() - lastClickTime > mClickIntervalTime) {
