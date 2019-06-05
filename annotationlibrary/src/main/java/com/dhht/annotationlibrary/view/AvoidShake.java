@@ -11,7 +11,6 @@ import com.dhht.annotation.UiThread;
  */
 public class AvoidShake {
 
-
     /**
      * 默认点击间隔时间
      */
