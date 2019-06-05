@@ -3,6 +3,7 @@ package com.dhht.annotationlibrary.view;
 import android.view.View;
 
 import com.dhht.annotation.Background;
+import com.dhht.annotation.UiThread;
 
 /**
  * @author HanPei
@@ -33,11 +34,17 @@ public class AvoidShake {
             } else {
                 Thread.sleep(clickIntervalTime);
             }
-            if (view != null) {
-                view.setClickable(true);
-            }
+            recoverView(view);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    @UiThread
+    private static void recoverView(View view) {
+        System.out.println("设置防抖动UiThread：" + Thread.currentThread().getName());
+        if (view != null) {
+            view.setClickable(true);
         }
     }
 
@@ -46,6 +53,11 @@ public class AvoidShake {
         return sClickIntervalTime;
     }
 
+    /**
+     * 默认点击间隔时间
+     *
+     * @param clickIntervalTime
+     */
     public static void setClickIntervalTime(int clickIntervalTime) {
         sClickIntervalTime = clickIntervalTime;
     }

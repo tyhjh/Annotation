@@ -27,10 +27,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        AvoidShake.setClickIntervalTime(9000);
-        //initAnnotation();
         ViewInjector.injectView(this);
+
+        AvoidShake.setClickIntervalTime(2000);
+        //initAnnotation();
+
+
         toast("xxxx");
     }
 
@@ -41,7 +43,10 @@ public class MainActivity extends Activity {
         x++;
         //Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, "txtView1：" + x, Toast.LENGTH_SHORT).show();
+
     }
+
+
 
     @Click(interval = 100)
     void txtView2() {
