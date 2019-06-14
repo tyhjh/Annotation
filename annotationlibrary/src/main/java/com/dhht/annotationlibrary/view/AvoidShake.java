@@ -3,7 +3,9 @@ package com.dhht.annotationlibrary.view;
 import android.view.View;
 
 import com.dhht.annotation.Background;
+import com.dhht.annotation.RefreshView;
 import com.dhht.annotation.UiThread;
+import com.dhht.annotationlibrary.R;
 
 /**
  * @author HanPei
@@ -46,6 +48,7 @@ public class AvoidShake {
             view.setClickable(true);
         }
     }
+
 
 
     public static int getClickIntervalTime() {

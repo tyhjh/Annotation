@@ -2,6 +2,7 @@ package com.dhht.annotator;
 
 import com.dhht.annotation.Click;
 import com.dhht.annotation.RecyclerMore;
+import com.dhht.annotation.RefreshView;
 import com.dhht.annotation.ViewById;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class ProxyInfo {
         builder.append("import android.view.View;\n");
         builder.append("import com.dhht.annotation.*;\n");
 
+
+        builder.append("import android.support.v4.widget.SwipeRefreshLayout;\n");
         builder.append("import android.support.v7.widget.RecyclerView;\n");
         builder.append("import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;\n");
         builder.append("import com.dhht.annotationlibrary.view.AvoidShake;\n");
@@ -98,6 +101,7 @@ public class ProxyInfo {
         builder.append("initViewById(host,source);\n ");
         builder.append("initClick(host,source);\n");
         builder.append("initRcylMore(host,source);\n");
+        builder.append("initRefreshView(host,source);\n");
         builder.append("  }\n");
 
 
@@ -134,6 +138,7 @@ public class ProxyInfo {
 
         //生成 initRcylMore 方法
         builder.append("public void initRcylMore(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        builder.append("RecyclerView view;\n");
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
@@ -141,6 +146,22 @@ public class ProxyInfo {
             if (annotation != null) {
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateRecycleMore(executableElement, builder);
+                iterator.remove();
+            }
+        }
+        builder.append("}");
+
+
+        //生成RefreshView方法
+        builder.append("public void initRefreshView(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        builder.append("SwipeRefreshLayout view;\n");
+        iterator = mElementList.iterator();
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
+            RefreshView annotation = element.getAnnotation(RefreshView.class);
+            if (annotation != null) {
+                ExecutableElement executableElement = (ExecutableElement) element;
+                generateRefreshView(executableElement, builder);
                 iterator.remove();
             }
         }
@@ -192,7 +213,6 @@ public class ProxyInfo {
         int intervalTime = executableElement.getAnnotation(Click.class).interval();
         //获取变量名字
         String mothed = executableElement.getSimpleName().toString();
-
         builder.append(" if(source instanceof android.app.Activity){\n");
 
         if (id == -1) {
@@ -200,23 +220,13 @@ public class ProxyInfo {
         } else {
             builder.append("view=((View)(((android.app.Activity)source).findViewById( " + id + ")));\n");
         }
-
-        builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ", new AvoidShakeListener() {\n" +
-                "            @Override\n" +
-                "            public void onClick(View v) {\n" +
-                "host." + mothed + "();" +
-                "                \n" +
-                "            }\n" +
-                "        }));");
-
-
         builder.append("\n}else{\n");
-
         if (id == -1) {
             builder.append("view=((View)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
             builder.append("view=((View)(((android.view.View)source).findViewById( " + id + ")));\n");
         }
+        builder.append("  }\n");
 
         builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ", new AvoidShakeListener() {\n" +
                 "            @Override\n" +
@@ -225,8 +235,6 @@ public class ProxyInfo {
                 "                \n" +
                 "            }\n" +
                 "        }));");
-
-        builder.append("  }\n");
     }
 
 
@@ -247,37 +255,24 @@ public class ProxyInfo {
         builder.append(" if(source instanceof android.app.Activity){\n");
 
         if (id == -1) {
-            builder.append("((RecyclerView)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")))");
+            builder.append("view=((RecyclerView)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
-            builder.append("((RecyclerView)(((android.app.Activity)source).findViewById( " + id + ")))");
+            builder.append("view=((RecyclerView)(((android.app.Activity)source).findViewById( " + id + ")));\n");
         }
-
-        builder.append(".addOnScrollListener(new RecyclerViewScrollListener() {\n" +
-                "\n" +
-                "            @Override\n" +
-                "            public void onScrollToBottom() {\n" +
-
-                "if(" + pageSize + "==-1){\n" +
-                "host." + mothed + "();\n" +
-                "                    }else if(itermsCount>=" + pageSize + "){\n" +
-                "host." + mothed + "();\n" +
-                "                    }" +
-
-                "            }\n" +
-                "        });");
 
         builder.append("\n}else{\n");
-
         if (id == -1) {
-            builder.append("((RecyclerView)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")))");
+            builder.append("view=((RecyclerView)(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
-            builder.append("((RecyclerView)(((android.view.View)source).findViewById( " + id + ")))");
+            builder.append("view=((RecyclerView)(((android.app.Activity)source).findViewById( " + id + ")));\n");
         }
+        builder.append("  }\n");
 
-        builder.append(".addOnScrollListener(new RecyclerViewScrollListener() {\n" +
+        builder.append("view.addOnScrollListener(new RecyclerViewScrollListener() {\n" +
                 "\n" +
                 "            @Override\n" +
                 "            public void onScrollToBottom() {\n" +
+
                 "if(" + pageSize + "==-1){\n" +
                 "host." + mothed + "();\n" +
                 "                    }else if(itermsCount>=" + pageSize + "){\n" +
@@ -285,8 +280,49 @@ public class ProxyInfo {
                 "                    }" +
                 "            }\n" +
                 "        });");
+    }
 
-        builder.append("  }\n");
+
+    /**
+     * 生成RefreshView方法
+     *
+     * @param executableElement
+     * @param builder
+     */
+    private void generateRefreshView(ExecutableElement executableElement, StringBuilder builder) {
+
+        //获取注解值
+        int id = executableElement.getAnnotation(RefreshView.class).value();
+        int[] colors = executableElement.getAnnotation(RefreshView.class).colors();
+
+        //获取变量名字
+        String mothed = executableElement.getSimpleName().toString();
+        builder.append("if (source instanceof android.app.Activity) {\n");
+        if (id == -1) {
+            builder.append("view = ((SwipeRefreshLayout) (((android.app.Activity) source).findViewById(" + "R.id." + mothed + ")));\n");
+        } else {
+            builder.append("view = ((SwipeRefreshLayout) (((android.app.Activity) source).findViewById(" + id + ")));\n");
+        }
+        builder.append("}else{\n");
+        if (id == -1) {
+            builder.append("view = ((SwipeRefreshLayout) (((android.view.View) source).findViewById(" + "R.id." + mothed + ")));\n");
+        } else {
+            builder.append("view = ((SwipeRefreshLayout) (((android.view.View) source).findViewById(" + id + ")));\n");
+        }
+        builder.append("}\n");
+        if (colors.length > 0) {
+            builder.append("view.setColorSchemeResources(");
+            for (int i = 0; i < colors.length; i++) {
+                if (i != colors.length - 1) {
+                    builder.append(colors[i] + ",");
+                } else {
+                    builder.append(colors[i]);
+                }
+            }
+            builder.append(");\n");
+        }
+        builder.append("view.setOnRefreshListener(() -> host." + mothed + "());\n");
+
     }
 
 
