@@ -14,7 +14,6 @@ import com.dhht.annotationlibrary.ViewInjector;
 import com.dhht.annotationlibrary.view.AvoidShake;
 
 import java.lang.reflect.Field;
-import java.util.Observable;
 
 /**
  * @author dhht

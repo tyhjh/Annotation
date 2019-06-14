@@ -227,14 +227,7 @@ public class ProxyInfo {
             builder.append("view=((View)(((android.view.View)source).findViewById( " + id + ")));\n");
         }
         builder.append("  }\n");
-
-        builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ", new AvoidShakeListener() {\n" +
-                "            @Override\n" +
-                "            public void onClick(View v) {\n" +
-                "host." + mothed + "();" +
-                "                \n" +
-                "            }\n" +
-                "        }));");
+        builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ",v->host." + mothed + "()));");
     }
 
 
