@@ -255,9 +255,9 @@ public class ProxyInfo {
 
         builder.append("\n}else{\n");
         if (id == -1) {
-            builder.append("view=((View)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")));\n");
+            builder.append("view=((RecyclerView)(((android.view.View)source).findViewById( " + "R.id." + mothed + ")));\n");
         } else {
-            builder.append("view=((View)(((android.view.View)source).findViewById( " + id + ")));\n");
+            builder.append("view=((RecyclerView)(((android.view.View)source).findViewById( " + id + ")));\n");
         }
         builder.append("  }\n");
 
