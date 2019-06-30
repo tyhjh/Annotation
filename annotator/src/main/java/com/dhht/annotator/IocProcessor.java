@@ -1,10 +1,10 @@
 package com.dhht.annotator;
 
-import com.dhht.annotation.CheckBox;
+import com.dhht.annotation.CheckBoxChange;
 import com.dhht.annotation.Click;
 import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.RefreshView;
-import com.dhht.annotation.Switch;
+import com.dhht.annotation.SwitchChange;
 import com.dhht.annotation.ViewById;
 import com.google.auto.service.AutoService;
 
@@ -81,8 +81,8 @@ public class IocProcessor extends AbstractProcessor {
         annotationTypes.add(Click.class.getCanonicalName());
         annotationTypes.add(RecyclerMore.class.getCanonicalName());
         annotationTypes.add(RefreshView.class.getCanonicalName());
-        annotationTypes.add(Switch.class.getCanonicalName());
-        annotationTypes.add(CheckBox.class.getCanonicalName());
+        annotationTypes.add(SwitchChange.class.getCanonicalName());
+        annotationTypes.add(CheckBoxChange.class.getCanonicalName());
         return annotationTypes;
 
     }
@@ -101,8 +101,8 @@ public class IocProcessor extends AbstractProcessor {
         mClasses.add(Click.class);
         mClasses.add(RecyclerMore.class);
         mClasses.add(RefreshView.class);
-        mClasses.add(CheckBox.class);
-        mClasses.add(Switch.class);
+        mClasses.add(CheckBoxChange.class);
+        mClasses.add(SwitchChange.class);
 
         //保存注解
         if (!saveAnnotation(roundEnvironment)) {

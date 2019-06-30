@@ -1,10 +1,10 @@
 package com.dhht.annotator;
 
-import com.dhht.annotation.CheckBox;
+import com.dhht.annotation.CheckBoxChange;
 import com.dhht.annotation.Click;
 import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.RefreshView;
-import com.dhht.annotation.Switch;
+import com.dhht.annotation.SwitchChange;
 import com.dhht.annotation.ViewById;
 
 import java.util.ArrayList;
@@ -179,7 +179,7 @@ public class ProxyInfo {
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
-            Switch annotation = element.getAnnotation(Switch.class);
+            SwitchChange annotation = element.getAnnotation(SwitchChange.class);
             if (annotation != null) {
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateSwitchView(executableElement, builder, "Switch");
@@ -195,7 +195,7 @@ public class ProxyInfo {
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
-            CheckBox annotation = element.getAnnotation(CheckBox.class);
+            CheckBoxChange annotation = element.getAnnotation(CheckBoxChange.class);
             if (annotation != null) {
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateCheckBox(executableElement, builder, "CheckBox");
@@ -210,7 +210,7 @@ public class ProxyInfo {
     private void generateCheckBox(ExecutableElement executableElement, StringBuilder builder, String viewType) {
 
         //获取注解值
-        int id = executableElement.getAnnotation(CheckBox.class).value();
+        int id = executableElement.getAnnotation(CheckBoxChange.class).value();
         initView(executableElement, builder, viewType, id);
 
         String mothed = executableElement.getSimpleName().toString();
@@ -305,7 +305,7 @@ public class ProxyInfo {
      */
     private void generateSwitchView(ExecutableElement executableElement, StringBuilder builder, String viewType) {
         //获取注解值
-        int id = executableElement.getAnnotation(Switch.class).value();
+        int id = executableElement.getAnnotation(SwitchChange.class).value();
         initView(executableElement, builder, viewType, id);
 
         String mothed = executableElement.getSimpleName().toString();

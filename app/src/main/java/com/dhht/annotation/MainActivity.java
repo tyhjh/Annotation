@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     }
 
 
-    @CheckBox
+    @CheckBoxChange
     void swTest(boolean isChecked, CompoundButton swTest) {
         Toast.makeText(this, "isChecked：" + swTest.isChecked(), Toast.LENGTH_SHORT).show();
     }

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface CheckBox {
+public @interface CheckBoxChange {
     /**
      * 控件ID，默认为变量名
      *

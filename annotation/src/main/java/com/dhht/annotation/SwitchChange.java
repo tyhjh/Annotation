@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface Switch {
+public @interface SwitchChange {
     /**
      * 控件ID，默认为变量名
      *
