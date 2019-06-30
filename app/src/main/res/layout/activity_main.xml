@@ -39,5 +39,16 @@
             android:layout_height="wrap_content"
             android:hint="哈哈哈哈" />
 
+        <CheckBox
+            android:id="@+id/swTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="测试"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
     </android.support.constraint.ConstraintLayout>
+
+
 </android.support.v4.widget.SwipeRefreshLayout>

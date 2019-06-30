@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
     TextView txtView, txtView2;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,12 @@ public class MainActivity extends Activity {
 
         toast("xxxx");
 
+    }
+
+
+    @CheckBox
+    void swTest(boolean isChecked, CompoundButton swTest) {
+        Toast.makeText(this, "isChecked：" + swTest.isChecked(), Toast.LENGTH_SHORT).show();
     }
 
     @ViewById

@@ -1,8 +1,10 @@
 package com.dhht.annotator;
 
+import com.dhht.annotation.CheckBox;
 import com.dhht.annotation.Click;
 import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.RefreshView;
+import com.dhht.annotation.Switch;
 import com.dhht.annotation.ViewById;
 
 import java.util.ArrayList;
@@ -63,7 +65,8 @@ public class ProxyInfo {
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import android.view.View;\n");
         builder.append("import com.dhht.annotation.*;\n");
-
+        builder.append("import android.widget.Switch;\n");
+        builder.append("import android.widget.CheckBox;\n");
 
         builder.append("import android.support.v4.widget.SwipeRefreshLayout;\n");
         builder.append("import android.support.v7.widget.RecyclerView;\n");
@@ -102,6 +105,8 @@ public class ProxyInfo {
         builder.append("initClick(host,source);\n");
         builder.append("initRcylMore(host,source);\n");
         builder.append("initRefreshView(host,source);\n");
+        builder.append("initSwitchView(host,source);\n");
+        builder.append("initCheckBox(host,source);\n");
         builder.append("  }\n");
 
 
@@ -168,6 +173,67 @@ public class ProxyInfo {
         builder.append("}");
 
 
+        //生成Switch方法
+        builder.append("public void initSwitchView(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        builder.append("Switch view;\n");
+        iterator = mElementList.iterator();
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
+            Switch annotation = element.getAnnotation(Switch.class);
+            if (annotation != null) {
+                ExecutableElement executableElement = (ExecutableElement) element;
+                generateSwitchView(executableElement, builder, "Switch");
+                iterator.remove();
+            }
+        }
+        builder.append("}");
+
+
+        //生成CheckBox方法
+        builder.append("public void initCheckBox(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        builder.append("CheckBox view;\n");
+        iterator = mElementList.iterator();
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
+            CheckBox annotation = element.getAnnotation(CheckBox.class);
+            if (annotation != null) {
+                ExecutableElement executableElement = (ExecutableElement) element;
+                generateCheckBox(executableElement, builder, "CheckBox");
+                iterator.remove();
+            }
+        }
+        builder.append("}");
+
+
+    }
+
+    private void generateCheckBox(ExecutableElement executableElement, StringBuilder builder, String viewType) {
+
+        //获取注解值
+        int id = executableElement.getAnnotation(CheckBox.class).value();
+        initView(executableElement, builder, viewType, id);
+
+        String mothed = executableElement.getSimpleName().toString();
+        List<VariableElement> variableElements = (List<VariableElement>) executableElement.getParameters();
+        int size = variableElements.size();
+        if (size == 1) {
+            String type1 = variableElements.get(0).asType().toString();
+            if (type1.equals("boolean") || type1.equals("Boolean")) {
+                mothed = "host." + mothed + "(isChecked)";
+            }
+        } else if (size == 0) {
+            mothed = "host." + mothed + "()";
+        } else if (size == 2) {
+            String type1 = variableElements.get(0).asType().toString();
+            String type2 = variableElements.get(1).asType().toString();
+            if ((type1.equals("boolean") || type1.equals("Boolean")) && type2.equals("android.widget.CompoundButton")) {
+                mothed = "host." + mothed + "(isChecked,buttonView)";
+            } else if ((type2.equals("boolean") || type2.equals("Boolean")) && type1.equals("android.widget.CompoundButton")) {
+                mothed = "host." + mothed + "(buttonView,isChecked)";
+            }
+        }
+        builder.append("view.setOnCheckedChangeListener(((buttonView, isChecked) ->" + mothed + "));");
+
     }
 
 
@@ -228,6 +294,68 @@ public class ProxyInfo {
         }
         builder.append("  }\n");
         builder.append(" view.setOnClickListener(new AvoidShakeClickHelper(" + intervalTime + ",v->host." + mothed + "()));");
+    }
+
+
+    /**
+     * 生成Switch方法
+     *
+     * @param executableElement
+     * @param builder
+     */
+    private void generateSwitchView(ExecutableElement executableElement, StringBuilder builder, String viewType) {
+        //获取注解值
+        int id = executableElement.getAnnotation(Switch.class).value();
+        initView(executableElement, builder, viewType, id);
+
+        String mothed = executableElement.getSimpleName().toString();
+        List<VariableElement> variableElements = (List<VariableElement>) executableElement.getParameters();
+        int size = variableElements.size();
+        if (size == 1) {
+            String type1 = variableElements.get(0).asType().toString();
+            if (type1.equals("boolean") || type1.equals("Boolean")) {
+                mothed = "host." + mothed + "(isChecked)";
+            }
+        } else if (size == 0) {
+            mothed = "host." + mothed + "()";
+        } else if (size == 2) {
+            String type1 = variableElements.get(0).asType().toString();
+            String type2 = variableElements.get(1).asType().toString();
+            if ((type1.equals("boolean") || type1.equals("Boolean")) && type2.equals("android.widget.CompoundButton")) {
+                mothed = "host." + mothed + "(isChecked,buttonView)";
+            } else if ((type2.equals("boolean") || type2.equals("Boolean")) && type1.equals("android.widget.CompoundButton")) {
+                mothed = "host." + mothed + "(buttonView,isChecked)";
+            }
+        }
+        builder.append("view.setOnCheckedChangeListener(((buttonView, isChecked) ->" + mothed + "));");
+
+    }
+
+
+    /**
+     * 初始化这个View
+     *
+     * @param executableElement
+     * @param builder
+     * @param viewType
+     */
+    private void initView(ExecutableElement executableElement, StringBuilder builder, String viewType, int id) {
+        //获取变量名字
+        String mothed = executableElement.getSimpleName().toString();
+        builder.append(" if(source instanceof android.app.Activity){\n");
+        if (id == -1) {
+            builder.append("view=((" + viewType + ")(((android.app.Activity)source).findViewById( " + "R.id." + mothed + ")));\n");
+        } else {
+            builder.append("view=((" + viewType + ")(((android.app.Activity)source).findViewById( " + id + ")));\n");
+        }
+        builder.append("\n}else{\n");
+        if (id == -1) {
+            builder.append("view=((" + viewType + ")(((android.view.View)source).findViewById( " + "R.id." + mothed + ")));\n");
+        } else {
+            builder.append("view=((" + viewType + ")(((android.view.View)source).findViewById( " + id + ")));\n");
+        }
+        builder.append("  }\n");
+
     }
 
 

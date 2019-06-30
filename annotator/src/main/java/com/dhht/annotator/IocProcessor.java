@@ -1,8 +1,10 @@
 package com.dhht.annotator;
 
+import com.dhht.annotation.CheckBox;
 import com.dhht.annotation.Click;
 import com.dhht.annotation.RecyclerMore;
 import com.dhht.annotation.RefreshView;
+import com.dhht.annotation.Switch;
 import com.dhht.annotation.ViewById;
 import com.google.auto.service.AutoService;
 
@@ -23,9 +25,7 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -81,7 +81,10 @@ public class IocProcessor extends AbstractProcessor {
         annotationTypes.add(Click.class.getCanonicalName());
         annotationTypes.add(RecyclerMore.class.getCanonicalName());
         annotationTypes.add(RefreshView.class.getCanonicalName());
+        annotationTypes.add(Switch.class.getCanonicalName());
+        annotationTypes.add(CheckBox.class.getCanonicalName());
         return annotationTypes;
+
     }
 
     @Override
@@ -98,6 +101,8 @@ public class IocProcessor extends AbstractProcessor {
         mClasses.add(Click.class);
         mClasses.add(RecyclerMore.class);
         mClasses.add(RefreshView.class);
+        mClasses.add(CheckBox.class);
+        mClasses.add(Switch.class);
 
         //保存注解
         if (!saveAnnotation(roundEnvironment)) {
