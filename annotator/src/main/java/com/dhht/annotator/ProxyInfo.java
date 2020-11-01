@@ -8,8 +8,10 @@ import com.dhht.annotation.SwitchChange;
 import com.dhht.annotation.ViewById;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -42,6 +44,8 @@ public class ProxyInfo {
      */
     public List<Element> mElementList = new ArrayList<>();
 
+    private Set<String> needClass = new HashSet<>();
+
 
     public static final String PROXY = "ViewInject";
 
@@ -60,21 +64,35 @@ public class ProxyInfo {
      * @return
      */
     public String generateJavaCode() {
+
+        needClass.add("android.widget.Switch");
+        needClass.add("android.widget.CheckBox");
+        for (Element element : mElementList) {
+            if (element instanceof VariableElement) {
+                VariableElement variableElement = (VariableElement) element;
+                String className = variableElement.asType().toString();
+                if (variableElement != null && className != null) {
+                    needClass.add(className);
+                }
+            }
+        }
+
+
         StringBuilder builder = new StringBuilder();
         builder.append("// Generated code. Do not modify!\n");
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import android.view.View;\n");
         builder.append("import com.dhht.annotation.*;\n");
-        builder.append("import android.widget.Switch;\n");
-        builder.append("import android.widget.CheckBox;\n");
-
-        builder.append("import android.support.v4.widget.SwipeRefreshLayout;\n");
-        builder.append("import android.support.v7.widget.RecyclerView;\n");
         builder.append("import com.dhht.annotationlibrary.view.RecyclerViewScrollListener;\n");
         builder.append("import com.dhht.annotationlibrary.view.AvoidShake;\n");
 
         builder.append("import com.dhht.annotationlibrary.view.AvoidShakeClickHelper;\n");
         builder.append("import com.dhht.annotationlibrary.view.AvoidShakeListener;\n");
+
+
+        for (String string : needClass) {
+            builder.append("import " + string + ";\n");
+        }
 
 
         builder.append("import ").append(getLibrayPath(packageName)).append(".R;\n");
@@ -92,6 +110,11 @@ public class ProxyInfo {
         return builder.toString();
     }
 
+
+    /**
+     * 是否已经申明了view
+     */
+    boolean stateView = false;
 
     /**
      * 生成根据注解去生成代码
@@ -112,6 +135,7 @@ public class ProxyInfo {
 
         //生成 initViewById 方法
         builder.append("public void initViewById(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
+        stateView = false;
         Iterator<Element> iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
@@ -127,28 +151,35 @@ public class ProxyInfo {
 
         //生成 initClick 方法
         builder.append("public void initClick(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
-        builder.append("View view;\n");
+        stateView = false;
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
             Click annotation = element.getAnnotation(Click.class);
             if (annotation != null) {
+                if (!stateView) {
+                    builder.append("View view;\n");
+                    stateView = true;
+                }
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateClick(executableElement, builder);
                 iterator.remove();
             }
         }
         builder.append("}");
-
-
         //生成 initRcylMore 方法
         builder.append("public void initRcylMore(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
-        builder.append("RecyclerView view;\n");
+
+        stateView = false;
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
             RecyclerMore annotation = element.getAnnotation(RecyclerMore.class);
             if (annotation != null) {
+                if (!stateView) {
+                    builder.append("RecyclerView view;\n");
+                    stateView = true;
+                }
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateRecycleMore(executableElement, builder);
                 iterator.remove();
@@ -159,12 +190,17 @@ public class ProxyInfo {
 
         //生成RefreshView方法
         builder.append("public void initRefreshView(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
-        builder.append("SwipeRefreshLayout view;\n");
+
+        stateView = false;
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
             RefreshView annotation = element.getAnnotation(RefreshView.class);
             if (annotation != null) {
+                if (!stateView) {
+                    builder.append("SwipeRefreshLayout view;\n");
+                    stateView = true;
+                }
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateRefreshView(executableElement, builder);
                 iterator.remove();
@@ -175,12 +211,16 @@ public class ProxyInfo {
 
         //生成Switch方法
         builder.append("public void initSwitchView(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
-        builder.append("Switch view;\n");
+        stateView = false;
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
             SwitchChange annotation = element.getAnnotation(SwitchChange.class);
             if (annotation != null) {
+                if (!stateView) {
+                    builder.append("Switch view;\n");
+                    stateView = true;
+                }
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateSwitchView(executableElement, builder, "Switch");
                 iterator.remove();
@@ -191,12 +231,15 @@ public class ProxyInfo {
 
         //生成CheckBox方法
         builder.append("public void initCheckBox(" + typeElement.getQualifiedName() + " host, Object source ) {\n");
-        builder.append("CheckBox view;\n");
+        stateView = false;
         iterator = mElementList.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
             CheckBoxChange annotation = element.getAnnotation(CheckBoxChange.class);
             if (annotation != null) {
+                if(!stateView){
+                    builder.append("CheckBox view;\n");
+                }
                 ExecutableElement executableElement = (ExecutableElement) element;
                 generateCheckBox(executableElement, builder, "CheckBox");
                 iterator.remove();

@@ -25,6 +25,7 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -147,11 +148,17 @@ public class IocProcessor extends AbstractProcessor {
                 TypeElement typeElement = (TypeElement) element.getEnclosingElement();
                 //获取外部类的类名
                 String qualifiedName = typeElement.getQualifiedName().toString();
+
+                PackageElement packageElement = mElementUtils.getPackageOf(typeElement);
+                String packageName = packageElement.getQualifiedName().toString();
+                //类的标志ID
+                String id=packageName+"."+qualifiedName;
+
                 //以外部类为单位保存
-                ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
+                ProxyInfo proxyInfo = mProxyMap.get(id);
                 if (proxyInfo == null) {
                     proxyInfo = new ProxyInfo(mElementUtils, typeElement);
-                    mProxyMap.put(qualifiedName, proxyInfo);
+                    mProxyMap.put(id, proxyInfo);
                 }
                 //把这个注解保存到proxyInfo里面，用于实现功能
                 proxyInfo.mElementList.add(element);
