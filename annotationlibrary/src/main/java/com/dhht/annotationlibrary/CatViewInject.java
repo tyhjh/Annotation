@@ -1,6 +1,6 @@
 package com.dhht.annotationlibrary;
 
-public interface ViewInject<T> {
+public interface CatViewInject<T> {
     /**
      * 提供给生成的代码去绑定id用的
      *

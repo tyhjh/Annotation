@@ -11,7 +11,11 @@ import android.widget.Toast;
 
 import com.dhht.annotation.annotation.ViewByIdLocal;
 import com.dhht.annotation.util.ResourceUtil;
-import com.dhht.annotationlibrary.ViewInjector;
+import com.dhht.annotationlibrary.CatAnnotation;
+import com.dhht.annotationlibrary.bean.MethodInfo;
+import com.dhht.annotationlibrary.interfaces.IExecuteListener;
+import com.dhht.annotationlibrary.interfaces.IExecuteTimePrinter;
+import com.dhht.annotationlibrary.utils.ExecuteManager;
 import com.dhht.annotationlibrary.view.AvoidShake;
 
 import java.lang.reflect.Field;
@@ -20,6 +24,8 @@ import java.lang.reflect.Field;
  * @author dhht
  */
 public class MainActivity extends Activity {
+
+    private static final String TAG="MainActivity";
 
     public final static int color1 = R.color.colorAccent;
     public final static int color2 = R.color.colorPrimary;
@@ -30,19 +36,44 @@ public class MainActivity extends Activity {
     TextView txtView, txtView2;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        CatAnnotation.injectView(this);
 
-        ViewInjector.injectView(this);
+        CatAnnotation.setClickIntervalTime(5000);
 
-        AvoidShake.setClickIntervalTime(2000);
+
+
+        ExecuteManager.getInstance().setPrinter((executeTime, annotion, methodInfo) -> {
+            Log.i(TAG,"方法耗时为： "+executeTime);
+            Log.i(TAG,"方法的详情："+methodInfo.toString());
+        });
+
+
+        ExecuteManager.getInstance().addExecuteListener(new IExecuteListener() {
+            @Override
+            public void before(CustomAnnotation annotation, MethodInfo methodInfo) {
+                Log.i(TAG,"before MethodInfo is "+methodInfo.toString());
+            }
+
+            @Override
+            public void after(CustomAnnotation annotation, MethodInfo methodInfo) {
+                Log.i(TAG,"after MethodInfo is "+methodInfo.toString());
+            }
+        });
+
+
         //initAnnotation();
-
         toast("xxxx");
+       // toast(name);
+    }
 
+
+    @Background(delay = 3000)
+    private String getName() {
+        return "111";
     }
 
 
@@ -80,27 +111,36 @@ public class MainActivity extends Activity {
 
     @Click(value = R.id.txtView)
     void txtView() {
-        //Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
+        x++;
+        Log.e("txtView", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, "txtView1：" + x, Toast.LENGTH_SHORT).show();
     }
 
 
     @Click(interval = 1000)
     void txtView2() {
+        x++;
         Log.e("txtView2", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, "txtView2：" + x, Toast.LENGTH_SHORT).show();
     }
 
-    void etTest() {
+    @CustomAnnotation
+    private void etTest() {
         Toast.makeText(MainActivity.this, "哈哈哈", Toast.LENGTH_SHORT).show();
     }
 
 
+    @ExecuteTime
+    @CustomAnnotation
     @UiThread(delay = 1000 * 5)
     void toast(String msg) {
         Log.e("toast", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
+
+
 
     @Background(delay = 3000)
     void backgroud(View view) {

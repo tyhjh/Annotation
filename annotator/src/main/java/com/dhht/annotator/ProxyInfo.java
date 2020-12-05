@@ -47,7 +47,7 @@ public class ProxyInfo {
     private Set<String> needClass = new HashSet<>();
 
 
-    public static final String PROXY = "ViewInject";
+    public static final String PROXY = "CatViewInject";
 
     public ProxyInfo(Elements elementUtils, TypeElement classElement) {
         this.typeElement = classElement;

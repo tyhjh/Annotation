@@ -3,22 +3,38 @@ package com.dhht.annotationlibrary;
 import android.app.Activity;
 import android.view.View;
 
+import com.dhht.annotationlibrary.view.AvoidShake;
+
+
 /**
- * Created by zhy on 16/4/22.
+ * @author tyhj
  */
-public class ViewInjector {
-    private static final String SUFFIX = "$$ViewInject";
+public class CatAnnotation {
+    private static final String SUFFIX = "$$CatViewInject";
+
 
     public static void injectView(Activity activity) {
-        ViewInject proxyActivity = findProxyActivity(activity);
+        CatViewInject proxyActivity = findProxyActivity(activity);
         if (proxyActivity == null) {
             return;
         }
         proxyActivity.inject(activity, activity);
     }
 
+
+
+    /**
+     * 默认点击间隔时间
+     *
+     * @param clickIntervalTime
+     */
+    public static void setClickIntervalTime(int clickIntervalTime) {
+        AvoidShake.setClickIntervalTime(clickIntervalTime);
+    }
+
+
     public static void injectView(Object object, View view) {
-        ViewInject proxyActivity = findProxyActivity(object);
+        CatViewInject proxyActivity = findProxyActivity(object);
         if (proxyActivity == null) {
             return;
         }
@@ -31,11 +47,11 @@ public class ViewInjector {
      * @param object
      * @return
      */
-    private static ViewInject findProxyActivity(Object object) {
+    private static CatViewInject findProxyActivity(Object object) {
         try {
             Class clazz = object.getClass();
             Class injectorClazz = Class.forName(clazz.getName() + SUFFIX);
-            return (ViewInject) injectorClazz.newInstance();
+            return (CatViewInject) injectorClazz.newInstance();
         } catch (Exception e) {
             return null;
         }

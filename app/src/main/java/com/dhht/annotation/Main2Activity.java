@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.dhht.annotationlibrary.ViewInjector;
+import com.dhht.annotationlibrary.CatAnnotation;
 import com.example.recyclelibrary.CommonAdapter;
 import com.example.recyclelibrary.CommonViewHolder;
 
@@ -35,7 +35,7 @@ public class Main2Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actvity_two);
-        ViewInjector.injectView(this);
+        CatAnnotation.injectView(this);
         mAdapter = new CommonAdapter<String>(this, mList, R.layout.list_item_txt) {
             @Override
             public void onBindView(CommonViewHolder viewHolder, String s) {
